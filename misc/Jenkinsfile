@@ -14,7 +14,7 @@ node {
     }
     stage('docker build/push') {
 
-        docker.withDockerRegistry('https://registry.hub.docker.com','dockerhub') {
+        docker.withRegistry('https://registry.hub.docker.com','dockerhub') {
             def app = docker.build("majumder1996/nodejs-demo:${commit_id}", '.').push()
         }
     }
