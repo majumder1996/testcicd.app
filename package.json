@@ -4,8 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node index.js"
+    "test": "mocha"
   },
   "author": "cicd",
   "license": "ISC",
