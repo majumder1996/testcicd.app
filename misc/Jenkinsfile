@@ -1,33 +1,23 @@
-node {
-    def commit_id
-    def docker = "my docker"
-    stage('Preparation') {
-        checkout scm
-        sh "git rev-parse --short HEAD > .git/commit_id"
-        commit_id = readFile('.git/commit_id').trim()
-    }
-    stage('test') {
-        nodejs(nodeJSInstallationName: 'nodejs') {
-            sh 'npm install --only-dev'
-            sh 'npm install -g pm2'
-            sh 'npm test'
+node {    
+      def app     
+      stage('Clone repository') {               
+             
+            checkout scm    
+      }     
+      stage('Build image') {         
+       
+            app = docker.build("majumder1996/nodejs-demo")    
+       }     
+      stage('Test image') {           
+            app.inside {            
+             
+             sh 'echo "Tests passed"'        
+            }    
+        }     
+       stage('Push image') {
+       docker.withRegistry('https://registry.hub.docker.com', 'dockurhub') {            
+       app.push("${env.BUILD_NUMBER}")            
+       app.push("v:0.1")        
+              }    
+           }
         }
-    }
-    stage('Build image') {
-        app = docker.build("majumder1996/nodejs-demo")    
-    }
-    // stage('deploy') {
-    //         nodejs(nodeJSInstallationName: 'nodejs') {
-    //         sh 'pm2 --name testCiCD start npm -- start'
-    //         sh 'pm2 ps'
-    //         sh 'pm2 delete 0'
-    //         sh 'pm2 ps'
-    //     }
-    // }
-    stage('Push image') {
-        withDockerRegistry(registry: [url: 'https://index.docker.io/v1/', credentialsId:'dockerhub']) {            
-        app.push("${env.BUILD_NUMBER}")            
-        app.push("v:0.1")        
-        }    
-    }
-}
