@@ -13,12 +13,21 @@ node {
             sh 'npm test'
         }
     }
-    stage('deploy') {
-            nodejs(nodeJSInstallationName: 'nodejs') {
-            sh 'pm2 --name testCiCD start npm -- start'
-            sh 'pm2 ps'
-            sh 'pm2 delete 0'
-            sh 'pm2 ps'
-        }
+    stage('Build image') {
+        app = docker.build("majumder1996/nodejs-demo")    
+    }
+    // stage('deploy') {
+    //         nodejs(nodeJSInstallationName: 'nodejs') {
+    //         sh 'pm2 --name testCiCD start npm -- start'
+    //         sh 'pm2 ps'
+    //         sh 'pm2 delete 0'
+    //         sh 'pm2 ps'
+    //     }
+    // }
+    stage('Push image') {
+        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {            
+        app.push("${env.BUILD_NUMBER}")            
+        app.push("v:0.1")        
+        }    
     }
 }
