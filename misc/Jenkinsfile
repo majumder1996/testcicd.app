@@ -12,11 +12,9 @@ node {
             sh 'npm test'
         }
     }
-    stage('docker build/push') {
-
-        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {            
-            app.push("${env.BUILD_NUMBER}")            
-            app.push("latest")        
+    stage('deploy') {
+            nodejs(nodeJSInstallationName: 'nodejs') {
+            sh 'npm start'
         }
     }
 }
