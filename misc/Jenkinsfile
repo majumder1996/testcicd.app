@@ -18,3 +18,4 @@ node {
         def app = docker.build("majumder1996/testcicd.app:${commit_id}", '.').push()
     }
 }
+}
