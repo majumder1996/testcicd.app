@@ -16,6 +16,9 @@ node {
     stage('deploy') {
             nodejs(nodeJSInstallationName: 'nodejs') {
             sh 'pm2 --name testCiCD start npm -- start'
+            sh 'pm2 ps'
+            sh 'pm2 delete'
+            sh 'pm2 ps'
         }
     }
 }
